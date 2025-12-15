@@ -31,31 +31,33 @@ export default function BudgetTable({ title, items, type = 'expense', onAdd, onU
     const inputStyle = {
         background: '#f0f0f0',
         border: '2px solid #e5e5e5',
-        borderRadius: '12px',
-        padding: '8px 12px',
+        borderRadius: '8px',
+        padding: '4px 8px', /* Reduced padding */
         width: '100%',
         fontWeight: '600',
+        fontSize: '0.85rem', /* Smaller font */
         color: 'var(--text-primary)',
         outline: 'none',
-        transition: 'border-color 0.2s'
+        transition: 'border-color 0.2s',
+        boxSizing: 'border-box' /* Ensure padding doesn't overflow */
     };
 
     return (
-        <div className="card" style={{ marginBottom: '2rem' }}>
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.5rem', borderBottom: '2px solid #f0f0f0', paddingBottom: '1rem' }}>
-                <h3 style={{ margin: 0, fontSize: '1.5rem' }}>{title}</h3>
-                <span style={{ fontSize: '1.5rem', fontWeight: 800, color: isIncome ? 'var(--color-green)' : 'var(--text-primary)' }}>
+        <div className="card" style={{ height: '100%', display: 'flex', flexDirection: 'column' }}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1rem', borderBottom: '2px solid #f0f0f0', paddingBottom: '0.5rem' }}>
+                <h3 style={{ margin: 0, fontSize: '1.2rem' }}>{title}</h3>
+                <span style={{ fontSize: '1.2rem', fontWeight: 800, color: isIncome ? 'var(--color-green)' : 'var(--text-primary)' }}>
                     {isIncome ? '+' : '-'}€{total.toLocaleString()}
                 </span>
             </div>
 
-            <table style={{ width: '100%', borderCollapse: 'separate', borderSpacing: '0 0.5rem' }}>
+            <table style={{ width: '100%', borderCollapse: 'separate', borderSpacing: '0 0.2rem' }}>
                 <thead>
                     <tr style={{ textAlign: 'left', color: 'var(--text-secondary)', fontSize: '0.8rem', textTransform: 'uppercase', letterSpacing: '1px' }}>
-                        <th style={{ padding: '0.5rem', width: '40%' }}>Name</th>
+                        <th style={{ padding: '0.5rem', width: '35%' }}>Name</th>
                         <th style={{ padding: '0.5rem', width: '30%' }}>Category</th>
                         <th style={{ padding: '0.5rem', textAlign: 'right', width: '20%' }}>Amount</th>
-                        <th style={{ padding: '0.5rem', textAlign: 'right', width: '10%' }}>Actions</th>
+                        <th style={{ padding: '0.5rem', textAlign: 'right', width: '15%' }}></th>
                     </tr>
                 </thead>
                 <tbody>
@@ -65,24 +67,24 @@ export default function BudgetTable({ title, items, type = 'expense', onAdd, onU
                             <tr key={item.id} style={{ transition: 'background 0.2s' }}>
                                 {isEditing ? (
                                     <>
-                                        <td style={{ padding: '0.5rem' }}><input name="name" value={editFormData.name} onChange={handleEditChange} style={inputStyle} /></td>
-                                        <td style={{ padding: '0.5rem' }}><input name="category" value={editFormData.category} onChange={handleEditChange} style={inputStyle} /></td>
-                                        <td style={{ padding: '0.5rem' }}><input name="amount" type="number" value={editFormData.amount} onChange={handleEditChange} style={{ ...inputStyle, textAlign: 'right' }} /></td>
-                                        <td style={{ padding: '0.5rem', textAlign: 'right' }}>
-                                            <div style={{ display: 'flex', gap: '8px', justifyContent: 'flex-end' }}>
-                                                <button onClick={handleSaveClick} className="btn-success" style={{ padding: '8px' }}>✓</button>
-                                                <button onClick={() => setEditingId(null)} className="btn-danger" style={{ padding: '8px' }}>✕</button>
+                                        <td style={{ padding: '0.2rem' }}><input className="animate-pop" name="name" value={editFormData.name} onChange={handleEditChange} style={inputStyle} /></td>
+                                        <td style={{ padding: '0.2rem' }}><input className="animate-pop" name="category" value={editFormData.category} onChange={handleEditChange} style={inputStyle} /></td>
+                                        <td style={{ padding: '0.2rem' }}><input className="animate-pop" name="amount" type="number" value={editFormData.amount} onChange={handleEditChange} style={{ ...inputStyle, textAlign: 'right' }} /></td>
+                                        <td style={{ padding: '0.2rem', textAlign: 'right' }}>
+                                            <div className="animate-pop" style={{ display: 'flex', gap: '4px', justifyContent: 'flex-end' }}>
+                                                <button onClick={handleSaveClick} className="btn-success" style={{ padding: '4px 8px', fontSize: '0.8rem' }}>✓</button>
+                                                <button onClick={() => setEditingId(null)} className="btn-danger" style={{ padding: '4px 8px', fontSize: '0.8rem' }}>✕</button>
                                             </div>
                                         </td>
                                     </>
                                 ) : (
                                     <>
-                                        <td style={{ padding: '1rem 0.5rem', fontWeight: 700 }}>{item.name}</td>
-                                        <td style={{ padding: '1rem 0.5rem', color: 'var(--text-secondary)', fontWeight: 600 }}>{item.category}</td>
-                                        <td style={{ padding: '1rem 0.5rem', textAlign: 'right', fontWeight: 800, color: isIncome ? 'var(--color-green)' : 'var(--text-primary)' }}>
+                                        <td style={{ padding: '0.5rem 0.5rem', fontWeight: 700 }}>{item.name}</td>
+                                        <td style={{ padding: '0.5rem 0.5rem', color: 'var(--text-secondary)', fontWeight: 600 }}>{item.category}</td>
+                                        <td style={{ padding: '0.5rem 0.5rem', textAlign: 'right', fontWeight: 800, color: isIncome ? 'var(--color-green)' : 'var(--text-primary)' }}>
                                             €{Number(item.amount).toLocaleString()}
                                         </td>
-                                        <td style={{ padding: '1rem 0.5rem', textAlign: 'right' }}>
+                                        <td style={{ padding: '0.5rem 0.5rem', textAlign: 'right' }}>
                                             <div style={{ display: 'flex', gap: '8px', justifyContent: 'flex-end' }}>
                                                 <button onClick={() => handleEditClick(item)} style={{ background: '#f0f0f0', color: '#999', borderRadius: '8px', padding: '6px' }}>✎</button>
                                                 <button onClick={() => onDelete(item.id)} style={{ background: '#fff0f0', color: 'var(--color-red)', borderRadius: '8px', padding: '6px' }}>🗑</button>
@@ -97,13 +99,13 @@ export default function BudgetTable({ title, items, type = 'expense', onAdd, onU
                     {/* Add Row */}
                     {isAdding ? (
                         <tr>
-                            <td style={{ padding: '0.5rem' }}><input name="name" placeholder="Name" value={newFormData.name} onChange={handleAddChange} autoFocus style={inputStyle} /></td>
-                            <td style={{ padding: '0.5rem' }}><input name="category" placeholder="Category" value={newFormData.category} onChange={handleAddChange} style={inputStyle} /></td>
-                            <td style={{ padding: '0.5rem' }}><input name="amount" type="number" placeholder="0" value={newFormData.amount} onChange={handleAddChange} style={{ ...inputStyle, textAlign: 'right' }} /></td>
-                            <td style={{ padding: '0.5rem', textAlign: 'right' }}>
-                                <div style={{ display: 'flex', gap: '8px', justifyContent: 'flex-end' }}>
-                                    <button onClick={handleAddSubmit} className="btn-success" style={{ padding: '8px' }}>✓</button>
-                                    <button onClick={() => setIsAdding(false)} className="btn-danger" style={{ padding: '8px' }}>✕</button>
+                            <td style={{ padding: '0.2rem' }}><input className="animate-pop" name="name" placeholder="Name" value={newFormData.name} onChange={handleAddChange} autoFocus style={inputStyle} /></td>
+                            <td style={{ padding: '0.2rem' }}><input className="animate-pop" name="category" placeholder="Cat" value={newFormData.category} onChange={handleAddChange} style={inputStyle} /></td>
+                            <td style={{ padding: '0.2rem' }}><input className="animate-pop" name="amount" type="number" placeholder="0" value={newFormData.amount} onChange={handleAddChange} style={{ ...inputStyle, textAlign: 'right' }} /></td>
+                            <td style={{ padding: '0.2rem', textAlign: 'right' }}>
+                                <div className="animate-pop" style={{ display: 'flex', gap: '4px', justifyContent: 'flex-end' }}>
+                                    <button onClick={handleAddSubmit} className="btn-success" style={{ padding: '4px 8px', fontSize: '0.8rem' }}>✓</button>
+                                    <button onClick={() => setIsAdding(false)} className="btn-danger" style={{ padding: '4px 8px', fontSize: '0.8rem' }}>✕</button>
                                 </div>
                             </td>
                         </tr>

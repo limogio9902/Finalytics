@@ -13,7 +13,7 @@ export default function BudgetPage() {
     if (!isLoaded) return <div className="container">Loading...</div>;
 
     return (
-        <div className="container" style={{ maxWidth: '1000px', marginLeft: 0 }}>
+        <div className="container" style={{ maxWidth: '1600px', margin: '0 auto' }}>
             {/* Header */}
             <header style={{ marginBottom: '3rem' }}>
                 <h1 style={{ fontSize: '2rem', marginBottom: '0.5rem' }}>Budget Planner</h1>
@@ -38,15 +38,22 @@ export default function BudgetPage() {
                 </div>
             </div>
 
-            {/* Tables */}
-            <div className="animate-enter delay-4">
-                <BudgetTable title="Incomes" items={incomes} type="income" onAdd={addIncome} onUpdate={updateIncome} onDelete={deleteIncome} />
-            </div>
-            <div className="animate-enter delay-4">
-                <BudgetTable title="Fixed Expenses" items={fixedExpenses} type="expense" onAdd={addFixed} onUpdate={updateFixed} onDelete={deleteFixed} />
-            </div>
-            <div className="animate-enter delay-4">
-                <BudgetTable title="Variable Expenses" items={variableExpenses} type="expense" onAdd={addVariable} onUpdate={updateVariable} onDelete={deleteVariable} />
+            {/* Tables Grid */}
+            <div className="animate-enter delay-4 text-sm" style={{
+                display: 'grid',
+                gridTemplateColumns: 'repeat(auto-fit, minmax(350px, 1fr))',
+                gap: '1.5rem',
+                alignItems: 'start'
+            }}>
+                <div style={{ minWidth: 0 }}>
+                    <BudgetTable title="Incomes" items={incomes} type="income" onAdd={addIncome} onUpdate={updateIncome} onDelete={deleteIncome} />
+                </div>
+                <div style={{ minWidth: 0 }}>
+                    <BudgetTable title="Fixed Expenses" items={fixedExpenses} type="expense" onAdd={addFixed} onUpdate={updateFixed} onDelete={deleteFixed} />
+                </div>
+                <div style={{ minWidth: 0 }}>
+                    <BudgetTable title="Variable Expenses" items={variableExpenses} type="expense" onAdd={addVariable} onUpdate={updateVariable} onDelete={deleteVariable} />
+                </div>
             </div>
         </div>
     );
