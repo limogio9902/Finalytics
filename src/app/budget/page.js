@@ -1,22 +1,16 @@
+"use client";
 import BudgetTable from '@/components/BudgetTable';
+import { useFinance } from '@/context/FinanceContext';
 
 export default function BudgetPage() {
-    const incomes = [
-        { id: 1, name: 'Salary', category: 'Job', amount: 3200 },
-        { id: 2, name: 'Freelance', category: 'Side Hustle', amount: 450 },
-    ];
+    const {
+        incomes, addIncome, updateIncome, deleteIncome,
+        fixedExpenses, addFixed, updateFixed, deleteFixed,
+        variableExpenses, addVariable, updateVariable, deleteVariable,
+        totalIncome, totalExpenses, savingsRate, isLoaded
+    } = useFinance();
 
-    const fixedExpenses = [
-        { id: 1, name: 'Rent', category: 'Housing', amount: 1200 },
-        { id: 2, name: 'Internet', category: 'Utilities', amount: 45 },
-        { id: 3, name: 'Spotify', category: 'Subscription', amount: 10 },
-    ];
-
-    const variableExpenses = [
-        { id: 1, name: 'Groceries', category: 'Food', amount: 400 },
-        { id: 2, name: 'Restaurants', category: 'Food', amount: 150 },
-        { id: 3, name: 'Transport', category: 'Transport', amount: 80 },
-    ];
+    if (!isLoaded) return <div className="container">Loading...</div>;
 
     return (
         <div className="container" style={{ maxWidth: '1000px', marginLeft: 0 }}>
@@ -30,22 +24,45 @@ export default function BudgetPage() {
             <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '1.5rem', marginBottom: '3rem' }}>
                 <div className="card" style={{ textAlign: 'center' }}>
                     <span style={{ color: 'var(--text-secondary)', fontSize: '0.9rem' }}>Total Income</span>
-                    <p style={{ fontSize: '1.5rem', fontWeight: 'bold', color: 'var(--success)' }}>€3,650</p>
+                    <p style={{ fontSize: '1.5rem', fontWeight: 'bold', color: 'var(--success)' }}>€{totalIncome.toLocaleString()}</p>
                 </div>
                 <div className="card" style={{ textAlign: 'center' }}>
                     <span style={{ color: 'var(--text-secondary)', fontSize: '0.9rem' }}>Total Expenses</span>
-                    <p style={{ fontSize: '1.5rem', fontWeight: 'bold', color: 'var(--danger)' }}>€1,885</p>
+                    <p style={{ fontSize: '1.5rem', fontWeight: 'bold', color: 'var(--danger)' }}>€{totalExpenses.toLocaleString()}</p>
                 </div>
                 <div className="card" style={{ textAlign: 'center' }}>
                     <span style={{ color: 'var(--text-secondary)', fontSize: '0.9rem' }}>Savings Capacity</span>
-                    <p style={{ fontSize: '1.5rem', fontWeight: 'bold', color: 'var(--accent-primary)' }}>€1,765 (48%)</p>
+                    <p style={{ fontSize: '1.5rem', fontWeight: 'bold', color: 'var(--accent-primary)' }}>
+                        €{(totalIncome - totalExpenses).toLocaleString()} ({savingsRate.toFixed(0)}%)
+                    </p>
                 </div>
             </div>
 
             {/* Tables */}
-            <BudgetTable title="Incomes" items={incomes} type="income" />
-            <BudgetTable title="Fixed Expenses" items={fixedExpenses} type="expense" />
-            <BudgetTable title="Variable Expenses" items={variableExpenses} type="expense" />
+            <BudgetTable
+                title="Incomes"
+                items={incomes}
+                type="income"
+                onAdd={addIncome}
+                onUpdate={updateIncome}
+                onDelete={deleteIncome}
+            />
+            <BudgetTable
+                title="Fixed Expenses"
+                items={fixedExpenses}
+                type="expense"
+                onAdd={addFixed}
+                onUpdate={updateFixed}
+                onDelete={deleteFixed}
+            />
+            <BudgetTable
+                title="Variable Expenses"
+                items={variableExpenses}
+                type="expense"
+                onAdd={addVariable}
+                onUpdate={updateVariable}
+                onDelete={deleteVariable}
+            />
         </div>
     );
 }

@@ -1,6 +1,19 @@
+"use client";
 import DashboardCard from '@/components/DashboardCard';
+import { useFinance } from '@/context/FinanceContext';
 
 export default function Home() {
+  const { totalIncome, totalExpenses, savingsRate, totalAssetValue, isLoaded } = useFinance();
+
+  // Net Worth = Assets + Cash (Income - Expenses this month, conceptually) 
+  // For simplicity, let's just say Net Worth = Total Assets + (Total Income - Total Expenses) * 1 (current cash)
+  // Or just Total Assets for now if we assume budget resets monthly.
+  // Let's define Net Worth as Total Assets + Monthly Savings for this view.
+  const monthlySavings = totalIncome - totalExpenses;
+  const netWorth = totalAssetValue + monthlySavings;
+
+  if (!isLoaded) return <div className="container">Loading...</div>;
+
   return (
     <div className="container" style={{ maxWidth: '1400px', marginLeft: 0 }}>
       <header style={{ marginBottom: '3rem', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
@@ -28,24 +41,24 @@ export default function Home() {
       }}>
         <DashboardCard
           title="Net Worth"
-          value="€124,500"
+          value={`€${netWorth.toLocaleString(undefined, { maximumFractionDigits: 0 })}`}
           trend={2.4}
         />
         <DashboardCard
           title="Monthly Income"
-          value="€3,200"
+          value={`€${totalIncome.toLocaleString()}`}
           trend={0.5}
           trendLabel="vs avg"
         />
         <DashboardCard
           title="Monthly Expenses"
-          value="€1,950"
+          value={`€${totalExpenses.toLocaleString()}`}
           trend={-5.2}
           trendLabel="below budget"
         />
         <DashboardCard
           title="Investments"
-          value="€20,300"
+          value={`€${totalAssetValue.toLocaleString(undefined, { maximumFractionDigits: 0 })}`}
           trend={12.8}
         />
       </div>
@@ -53,7 +66,7 @@ export default function Home() {
       <section>
         <h2 style={{ fontSize: '1.25rem', marginBottom: '1.5rem' }}>Asset Allocation</h2>
         <div className="card" style={{ height: '300px', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#666' }}>
-          [Chart Placeholder - Allocation]
+          [Chart Placeholder - Allocation based on {totalAssetValue.toLocaleString()} assets]
         </div>
       </section>
     </div>

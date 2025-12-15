@@ -1,12 +1,11 @@
+"use client";
 import AssetTable from '@/components/AssetTable';
+import { useFinance } from '@/context/FinanceContext';
 
 export default function AssetsPage() {
-    const assets = [
-        { id: 1, name: 'S&P 500 ETF', symbol: 'SP500', price: 450.20, quantity: 25, avgBuyPrice: 380.00, type: 'Stock' },
-        { id: 2, name: 'Bitcoin', symbol: 'BTC', price: 42500, quantity: 0.15, avgBuyPrice: 30000, type: 'Crypto' },
-        { id: 3, name: 'Ethereum', symbol: 'ETH', price: 2250, quantity: 1.5, avgBuyPrice: 1800, type: 'Crypto' },
-        { id: 4, name: 'LVMH', symbol: 'MC.PA', price: 720.50, quantity: 8, avgBuyPrice: 650.00, type: 'Stock' },
-    ];
+    const { assets, addAsset, updateAsset, deleteAsset, totalAssetValue, isLoaded } = useFinance();
+
+    if (!isLoaded) return <div className="container">Loading...</div>;
 
     return (
         <div className="container" style={{ maxWidth: '1000px', marginLeft: 0 }}>
@@ -21,24 +20,14 @@ export default function AssetsPage() {
                         </span>
                     </p>
                 </div>
-                <button style={{
-                    background: 'var(--accent-primary)',
-                    color: 'white',
-                    border: 'none',
-                    padding: '0.75rem 1.5rem',
-                    borderRadius: '8px',
-                    fontWeight: 600
-                }}>
-                    + Add Asset
-                </button>
             </header>
 
             {/* Portfolio Summary */}
             <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: '1.5rem', marginBottom: '3rem' }}>
                 <div className="card" style={{ background: 'linear-gradient(135deg, #111 0%, #0a0a0a 100%)' }}>
                     <span style={{ color: 'var(--text-secondary)', fontSize: '0.9rem' }}>Total Portfolio Value</span>
-                    <p style={{ fontSize: '2.5rem', fontWeight: 'bold', margin: '0.5rem 0' }}>€26,358</p>
-                    <span style={{ color: 'var(--success)' }}>+€4,500 (+20.5%) All time</span>
+                    <p style={{ fontSize: '2.5rem', fontWeight: 'bold', margin: '0.5rem 0' }}>€{totalAssetValue.toLocaleString(undefined, { maximumFractionDigits: 0 })}</p>
+                    <span style={{ color: 'var(--success)' }}>-- (Realized P&L TBD)</span>
                 </div>
                 <div className="card">
                     <span style={{ color: 'var(--text-secondary)', fontSize: '0.9rem' }}>Allocation</span>
@@ -55,7 +44,12 @@ export default function AssetsPage() {
                 </div>
             </div>
 
-            <AssetTable assets={assets} />
+            <AssetTable
+                assets={assets}
+                onAdd={addAsset}
+                onUpdate={updateAsset}
+                onDelete={deleteAsset}
+            />
         </div>
     );
 }
