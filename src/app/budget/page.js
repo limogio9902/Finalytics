@@ -14,7 +14,7 @@ export default function BudgetPage() {
     if (!isLoaded) return <div className="container">Loading...</div>;
 
     return (
-        <div className="container" style={{ maxWidth: '1600px', margin: '0 auto' }}>
+        <div className="container" style={{ maxWidth: '1200px', margin: '0 auto' }}>
             {/* Header */}
             <header style={{ marginBottom: '3rem' }}>
                 <h1 style={{ fontSize: '2rem', marginBottom: '0.5rem' }}>Budget Planner</h1>

@@ -1,6 +1,6 @@
 export default function AnalyticsPage() {
     return (
-        <div className="container" style={{ maxWidth: '1000px', marginLeft: 0 }}>
+        <div className="container" style={{ maxWidth: '1000px', margin: '0 auto' }}>
             <header style={{ marginBottom: '3rem' }}>
                 <h1 style={{ fontSize: '2rem', marginBottom: '0.5rem' }}>Analytics & Projections</h1>
                 <p style={{ color: 'var(--text-secondary)' }}>Visualize your path to financial freedom.</p>

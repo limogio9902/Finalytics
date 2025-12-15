@@ -8,7 +8,7 @@ export default function AssetsPage() {
     if (!isLoaded) return <div className="container">Loading...</div>;
 
     return (
-        <div className="container" style={{ maxWidth: '1000px', marginLeft: 0 }}>
+        <div className="container" style={{ maxWidth: '1000px', margin: '0 auto' }}>
             {/* Header */}
             <header style={{ marginBottom: '3rem', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                 <div>

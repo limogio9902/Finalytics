@@ -15,7 +15,7 @@ export default function Home() {
   if (!isLoaded) return <div className="container">Loading...</div>;
 
   return (
-    <div className="container" style={{ maxWidth: '1400px', marginLeft: 0 }}>
+    <div className="container" style={{ maxWidth: '1400px', margin: '0 auto' }}>
       <header style={{ marginBottom: '3rem', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
         <div>
           <h1 style={{ fontSize: '2rem', marginBottom: '0.5rem' }}>Overview</h1>
