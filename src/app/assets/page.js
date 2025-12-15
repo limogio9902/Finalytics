@@ -24,32 +24,34 @@ export default function AssetsPage() {
 
             {/* Portfolio Summary */}
             <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: '1.5rem', marginBottom: '3rem' }}>
-                <div className="card" style={{ background: 'linear-gradient(135deg, #111 0%, #0a0a0a 100%)' }}>
-                    <span style={{ color: 'var(--text-secondary)', fontSize: '0.9rem' }}>Total Portfolio Value</span>
-                    <p style={{ fontSize: '2.5rem', fontWeight: 'bold', margin: '0.5rem 0' }}>€{totalAssetValue.toLocaleString(undefined, { maximumFractionDigits: 0 })}</p>
-                    <span style={{ color: 'var(--success)' }}>-- (Realized P&L TBD)</span>
+                <div className="card animate-enter delay-1" style={{ background: 'linear-gradient(135deg, var(--color-blue) 0%, #1899d6 100%)', color: 'white', border: 'none' }}>
+                    <span style={{ fontSize: '0.9rem', opacity: 0.9 }}>Total Portfolio Value</span>
+                    <p style={{ fontSize: '2.5rem', fontWeight: 800, margin: '0.5rem 0' }}>€{totalAssetValue.toLocaleString(undefined, { maximumFractionDigits: 0 })}</p>
+                    <span style={{ background: 'rgba(255,255,255,0.2)', padding: '4px 8px', borderRadius: '8px', fontSize: '0.85rem' }}>+12.5% this month</span>
                 </div>
-                <div className="card">
-                    <span style={{ color: 'var(--text-secondary)', fontSize: '0.9rem' }}>Allocation</span>
+                <div className="card animate-enter delay-2">
+                    <span style={{ color: 'var(--text-secondary)', fontSize: '0.9rem', fontWeight: 600 }}>Allocation</span>
                     <div style={{ display: 'flex', gap: '1rem', marginTop: '1rem' }}>
                         <div>
-                            <div style={{ height: '8px', width: '100px', background: '#3b82f6', borderRadius: '4px' }}></div>
-                            <span style={{ fontSize: '0.8rem' }}>Stocks (65%)</span>
+                            <div style={{ height: '12px', width: '100px', background: 'var(--color-blue)', borderRadius: '6px' }}></div>
+                            <span style={{ fontSize: '0.9rem', fontWeight: 700 }}>Stocks (65%)</span>
                         </div>
                         <div>
-                            <div style={{ height: '8px', width: '60px', background: '#8b5cf6', borderRadius: '4px' }}></div>
-                            <span style={{ fontSize: '0.8rem' }}>Crypto (35%)</span>
+                            <div style={{ height: '12px', width: '60px', background: 'var(--color-purple)', borderRadius: '6px' }}></div>
+                            <span style={{ fontSize: '0.9rem', fontWeight: 700 }}>Crypto (35%)</span>
                         </div>
                     </div>
                 </div>
             </div>
 
-            <AssetTable
-                assets={assets}
-                onAdd={addAsset}
-                onUpdate={updateAsset}
-                onDelete={deleteAsset}
-            />
+            <div className="animate-enter delay-3">
+                <AssetTable
+                    assets={assets}
+                    onAdd={addAsset}
+                    onUpdate={updateAsset}
+                    onDelete={deleteAsset}
+                />
+            </div>
         </div>
     );
 }

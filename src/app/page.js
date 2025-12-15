@@ -39,31 +39,31 @@ export default function Home() {
         gap: '1.5rem',
         marginBottom: '3rem'
       }}>
-        <DashboardCard
+        <div className="animate-enter delay-1"><DashboardCard
           title="Net Worth"
           value={`€${netWorth.toLocaleString(undefined, { maximumFractionDigits: 0 })}`}
           trend={2.4}
-        />
-        <DashboardCard
+        /></div>
+        <div className="animate-enter delay-2"><DashboardCard
           title="Monthly Income"
           value={`€${totalIncome.toLocaleString()}`}
           trend={0.5}
           trendLabel="vs avg"
-        />
-        <DashboardCard
+        /></div>
+        <div className="animate-enter delay-3"><DashboardCard
           title="Monthly Expenses"
           value={`€${totalExpenses.toLocaleString()}`}
           trend={-5.2}
           trendLabel="below budget"
-        />
-        <DashboardCard
+        /></div>
+        <div className="animate-enter delay-4"><DashboardCard
           title="Investments"
           value={`€${totalAssetValue.toLocaleString(undefined, { maximumFractionDigits: 0 })}`}
           trend={12.8}
-        />
+        /></div>
       </div>
 
-      <section>
+      <section className="animate-enter delay-4">
         <h2 style={{ fontSize: '1.25rem', marginBottom: '1.5rem' }}>Asset Allocation</h2>
         <div className="card" style={{ height: '300px', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#666' }}>
           [Chart Placeholder - Allocation based on {totalAssetValue.toLocaleString()} assets]

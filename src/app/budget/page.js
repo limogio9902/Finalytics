@@ -22,47 +22,32 @@ export default function BudgetPage() {
 
             {/* Summary Cards */}
             <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '1.5rem', marginBottom: '3rem' }}>
-                <div className="card" style={{ textAlign: 'center' }}>
-                    <span style={{ color: 'var(--text-secondary)', fontSize: '0.9rem' }}>Total Income</span>
-                    <p style={{ fontSize: '1.5rem', fontWeight: 'bold', color: 'var(--success)' }}>€{totalIncome.toLocaleString()}</p>
+                <div className="card animate-enter delay-1" style={{ textAlign: 'center' }}>
+                    <span style={{ color: 'var(--text-secondary)', fontSize: '0.9rem', fontWeight: 600 }}>Total Income</span>
+                    <p style={{ fontSize: '1.5rem', fontWeight: 'bold', color: 'var(--color-green)' }}>€{totalIncome.toLocaleString()}</p>
                 </div>
-                <div className="card" style={{ textAlign: 'center' }}>
-                    <span style={{ color: 'var(--text-secondary)', fontSize: '0.9rem' }}>Total Expenses</span>
-                    <p style={{ fontSize: '1.5rem', fontWeight: 'bold', color: 'var(--danger)' }}>€{totalExpenses.toLocaleString()}</p>
+                <div className="card animate-enter delay-2" style={{ textAlign: 'center' }}>
+                    <span style={{ color: 'var(--text-secondary)', fontSize: '0.9rem', fontWeight: 600 }}>Total Expenses</span>
+                    <p style={{ fontSize: '1.5rem', fontWeight: 'bold', color: 'var(--color-red)' }}>€{totalExpenses.toLocaleString()}</p>
                 </div>
-                <div className="card" style={{ textAlign: 'center' }}>
-                    <span style={{ color: 'var(--text-secondary)', fontSize: '0.9rem' }}>Savings Capacity</span>
-                    <p style={{ fontSize: '1.5rem', fontWeight: 'bold', color: 'var(--accent-primary)' }}>
+                <div className="card animate-enter delay-3" style={{ textAlign: 'center' }}>
+                    <span style={{ color: 'var(--text-secondary)', fontSize: '0.9rem', fontWeight: 600 }}>Savings Capacity</span>
+                    <p style={{ fontSize: '1.5rem', fontWeight: 'bold', color: 'var(--color-blue)' }}>
                         €{(totalIncome - totalExpenses).toLocaleString()} ({savingsRate.toFixed(0)}%)
                     </p>
                 </div>
             </div>
 
             {/* Tables */}
-            <BudgetTable
-                title="Incomes"
-                items={incomes}
-                type="income"
-                onAdd={addIncome}
-                onUpdate={updateIncome}
-                onDelete={deleteIncome}
-            />
-            <BudgetTable
-                title="Fixed Expenses"
-                items={fixedExpenses}
-                type="expense"
-                onAdd={addFixed}
-                onUpdate={updateFixed}
-                onDelete={deleteFixed}
-            />
-            <BudgetTable
-                title="Variable Expenses"
-                items={variableExpenses}
-                type="expense"
-                onAdd={addVariable}
-                onUpdate={updateVariable}
-                onDelete={deleteVariable}
-            />
+            <div className="animate-enter delay-4">
+                <BudgetTable title="Incomes" items={incomes} type="income" onAdd={addIncome} onUpdate={updateIncome} onDelete={deleteIncome} />
+            </div>
+            <div className="animate-enter delay-4">
+                <BudgetTable title="Fixed Expenses" items={fixedExpenses} type="expense" onAdd={addFixed} onUpdate={updateFixed} onDelete={deleteFixed} />
+            </div>
+            <div className="animate-enter delay-4">
+                <BudgetTable title="Variable Expenses" items={variableExpenses} type="expense" onAdd={addVariable} onUpdate={updateVariable} onDelete={deleteVariable} />
+            </div>
         </div>
     );
 }

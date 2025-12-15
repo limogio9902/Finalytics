@@ -1,13 +1,13 @@
-import './globals.css';
-import { Inter } from 'next/font/google';
-import Sidebar from '@/components/Sidebar';
-import { FinanceProvider } from '@/context/FinanceContext';
+import { Inter } from "next/font/google";
+import "./globals.css";
+import AppLayout from "@/components/AppLayout";
+import { FinanceProvider } from "@/context/FinanceContext";
 
-const inter = Inter({ subsets: ['latin'] });
+const inter = Inter({ subsets: ["latin"] });
 
 export const metadata = {
-  title: 'Finalytics',
-  description: 'Track your wealth with precision.',
+  title: "Finalytics | Personal Finance",
+  description: "Track your wealth with style.",
 };
 
 export default function RootLayout({ children }) {
@@ -15,12 +15,9 @@ export default function RootLayout({ children }) {
     <html lang="en">
       <body className={inter.className}>
         <FinanceProvider>
-          <div className="layout-wrapper">
-            <Sidebar />
-            <main className="main-content animate-enter">
-              {children}
-            </main>
-          </div>
+          <AppLayout>
+            {children}
+          </AppLayout>
         </FinanceProvider>
       </body>
     </html>
