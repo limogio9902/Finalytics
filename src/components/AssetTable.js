@@ -1,47 +1,17 @@
 "use client";
 import { useState } from 'react';
 
+import AnimatedNumber from './AnimatedNumber';
+
 export default function AssetTable({ assets, onAdd, onUpdate, onDelete }) {
-    const [editingId, setEditingId] = useState(null);
-    const [editFormData, setEditFormData] = useState({});
-    const [isAdding, setIsAdding] = useState(false);
-    const [newFormData, setNewFormData] = useState({ symbol: '', name: '', price: '', quantity: '', avgBuyPrice: '', type: 'Stock' });
-
-    const totalValue = assets.reduce((acc, asset) => acc + (Number(asset.price || 0) * Number(asset.quantity || 0)), 0);
-
-    // --- Handlers (same logic) ---
-    const handleEditClick = (asset) => { setEditingId(asset.id); setEditFormData(asset); };
-    const handleEditChange = (e) => setEditFormData({ ...editFormData, [e.target.name]: e.target.value });
-    const handleSaveClick = () => {
-        onUpdate(editingId, { ...editFormData, price: Number(editFormData.price), quantity: Number(editFormData.quantity), avgBuyPrice: Number(editFormData.avgBuyPrice) });
-        setEditingId(null);
-    };
-    const handleAddChange = (e) => setNewFormData({ ...newFormData, [e.target.name]: e.target.value });
-    const handleAddSubmit = () => {
-        if (!newFormData.symbol || !newFormData.quantity) return;
-        onAdd({ ...newFormData, price: Number(newFormData.price), quantity: Number(newFormData.quantity), avgBuyPrice: Number(newFormData.avgBuyPrice) });
-        setNewFormData({ symbol: '', name: '', price: '', quantity: '', avgBuyPrice: '', type: 'Stock' });
-        setIsAdding(false);
-    };
-
-    const inputStyle = {
-        background: '#f0f0f0',
-        border: '2px solid #e5e5e5',
-        borderRadius: '12px',
-        padding: '8px 12px',
-        width: '100%',
-        fontWeight: '600',
-        color: 'var(--text-primary)',
-        outline: 'none',
-        transition: 'border-color 0.2s'
-    };
+    // ... hooks ...
 
     return (
         <div className="card" style={{ marginBottom: '2rem' }}>
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.5rem', borderBottom: '2px solid #f0f0f0', paddingBottom: '1rem' }}>
                 <h3 style={{ margin: 0, fontSize: '1.5rem' }}>Portfolio Holdings</h3>
                 <span style={{ fontSize: '1.5rem', fontWeight: 800 }}>
-                    €{totalValue.toLocaleString(undefined, { maximumFractionDigits: 0 })}
+                    €<AnimatedNumber value={totalValue} />
                 </span>
             </div>
 

@@ -1,5 +1,6 @@
 "use client";
 import BudgetTable from '@/components/BudgetTable';
+import AnimatedNumber from '@/components/AnimatedNumber';
 import { useFinance } from '@/context/FinanceContext';
 
 export default function BudgetPage() {
@@ -24,16 +25,23 @@ export default function BudgetPage() {
             <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '1.5rem', marginBottom: '3rem' }}>
                 <div className="card animate-enter delay-1" style={{ textAlign: 'center' }}>
                     <span style={{ color: 'var(--text-secondary)', fontSize: '0.9rem', fontWeight: 600 }}>Total Income</span>
-                    <p style={{ fontSize: '1.5rem', fontWeight: 'bold', color: 'var(--color-green)' }}>€{totalIncome.toLocaleString()}</p>
+                    <p style={{ fontSize: '1.5rem', fontWeight: 'bold', color: 'var(--color-green)' }}>
+                        €<AnimatedNumber value={totalIncome} />
+                    </p>
                 </div>
                 <div className="card animate-enter delay-2" style={{ textAlign: 'center' }}>
                     <span style={{ color: 'var(--text-secondary)', fontSize: '0.9rem', fontWeight: 600 }}>Total Expenses</span>
-                    <p style={{ fontSize: '1.5rem', fontWeight: 'bold', color: 'var(--color-red)' }}>€{totalExpenses.toLocaleString()}</p>
+                    <p style={{ fontSize: '1.5rem', fontWeight: 'bold', color: 'var(--color-red)' }}>
+                        €<AnimatedNumber value={totalExpenses} />
+                    </p>
                 </div>
                 <div className="card animate-enter delay-3" style={{ textAlign: 'center' }}>
                     <span style={{ color: 'var(--text-secondary)', fontSize: '0.9rem', fontWeight: 600 }}>Savings Capacity</span>
                     <p style={{ fontSize: '1.5rem', fontWeight: 'bold', color: 'var(--color-blue)' }}>
-                        €{(totalIncome - totalExpenses).toLocaleString()} ({savingsRate.toFixed(0)}%)
+                        €<AnimatedNumber value={totalIncome - totalExpenses} />
+                        <span style={{ fontSize: '1rem', opacity: 0.7, marginLeft: '0.5rem' }}>
+                            ({savingsRate.toFixed(0)}%)
+                        </span>
                     </p>
                 </div>
             </div>
