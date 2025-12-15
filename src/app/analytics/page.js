@@ -1,68 +1,117 @@
+"use client";
+import { useFinance } from '@/context/FinanceContext';
+import CashFlowSankey from '@/components/CashFlowSankey';
+
 export default function AnalyticsPage() {
+    const { incomes, fixedExpenses, variableExpenses, totalIncome, totalExpenses, isLoaded } = useFinance();
+
+    if (!isLoaded) return <div className="container">Loading...</div>;
+
+    // --- Data Transformation for Sankey ---
+    // Nodes: Income Sources, "Budget", Expense Categories, "Savings"
+    const nodes = [];
+    const links = [];
+
+    // Helper to find or add node
+    const getOrCreateNode = (name, color = null) => {
+        let node = nodes.find(n => n.id === name);
+        if (!node) {
+            node = { id: name };
+            if (color) node.nodeColor = color;
+            nodes.push(node);
+        }
+        return node;
+    };
+
+    // 1. Income -> Budget
+    // Aggregate incomes by name (or category, but name is detailed enough usually)
+    incomes.forEach(inc => {
+        const amount = Number(inc.amount);
+        if (amount > 0) {
+            getOrCreateNode(inc.name);
+            getOrCreateNode("Budget", "#4f46e5"); // Central Node
+            links.push({ source: inc.name, target: "Budget", value: amount });
+        }
+    });
+
+    // 2. Budget -> Expenses (Grouped by Category)
+    const allExpenses = [...fixedExpenses, ...variableExpenses];
+    const expensesByCategory = allExpenses.reduce((acc, exp) => {
+        const cat = exp.category || 'Other';
+        acc[cat] = (acc[cat] || 0) + Number(exp.amount);
+        return acc;
+    }, {});
+
+    Object.entries(expensesByCategory).forEach(([category, amount]) => {
+        if (amount > 0) {
+            getOrCreateNode(category);
+            links.push({ source: "Budget", target: category, value: amount });
+        }
+    });
+
+    // 3. Budget -> Savings
+    // Only if Income > Expenses
+    if (totalIncome > totalExpenses) {
+        const savings = totalIncome - totalExpenses;
+        getOrCreateNode("Savings", "#10b981");
+        links.push({ source: "Budget", target: "Savings", value: savings });
+    }
+
+    const sankeyData = { nodes, links };
+
+
     return (
-        <div className="container" style={{ maxWidth: '1000px', margin: '0 auto' }}>
+        <div className="container" style={{ maxWidth: '1200px', margin: '0 auto' }}>
             <header style={{ marginBottom: '3rem' }}>
                 <h1 style={{ fontSize: '2rem', marginBottom: '0.5rem' }}>Analytics & Projections</h1>
                 <p style={{ color: 'var(--text-secondary)' }}>Visualize your path to financial freedom.</p>
             </header>
 
-            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: '2rem' }}>
+            <div style={{ display: 'grid', gridTemplateColumns: '1fr', gap: '2rem' }}>
 
-                {/* Wealth Projection */}
-                <div className="card" style={{ gridColumn: 'span 2' }}>
-                    <h2 style={{ fontSize: '1.25rem', marginBottom: '1rem' }}>Net Worth Projection (10 Years)</h2>
-                    <div style={{ height: '300px', background: 'rgba(255,255,255,0.02)', borderRadius: '8px', display: 'flex', alignItems: 'flex-end', padding: '1rem', gap: '5px' }}>
-                        {/* Mock Chart Bars */}
-                        {Array.from({ length: 20 }).map((_, i) => {
-                            const height = 20 + (i * 4) + Math.random() * 5;
-                            return (
-                                <div key={i} style={{
-                                    height: `${height}%`,
-                                    flex: 1,
-                                    background: 'linear-gradient(0deg, var(--accent-primary), transparent)',
-                                    borderRadius: '2px 2px 0 0',
-                                    opacity: 0.8
-                                }}></div>
-                            );
-                        })}
-                    </div>
-                    <div style={{ display: 'flex', justifyContent: 'space-between', marginTop: '1rem', color: '#666', fontSize: '0.9rem' }}>
-                        <span>2024</span>
-                        <span>2029</span>
-                        <span>2034</span>
+                {/* Cash Flow Sankey */}
+                <div className="card">
+                    <h2 style={{ fontSize: '1.25rem', marginBottom: '1rem' }}>Monthly Cash Flow</h2>
+                    <div style={{ height: '500px', background: 'var(--bg-secondary)', borderRadius: '8px', padding: '1rem' }}>
+                        <CashFlowSankey data={sankeyData} />
                     </div>
                 </div>
 
-                {/* Expense Breakdown */}
-                <div className="card">
-                    <h2 style={{ fontSize: '1.25rem', marginBottom: '1rem' }}>Top Expenses</h2>
-                    <ul style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
-                        <li style={{ display: 'flex', justifyContent: 'space-between', paddingBottom: '0.5rem', borderBottom: '1px solid #333' }}>
-                            <span>Housing</span>
-                            <span style={{ fontWeight: 600 }}>€1,200</span>
-                        </li>
-                        <li style={{ display: 'flex', justifyContent: 'space-between', paddingBottom: '0.5rem', borderBottom: '1px solid #333' }}>
-                            <span>Food</span>
-                            <span style={{ fontWeight: 600 }}>€550</span>
-                        </li>
-                        <li style={{ display: 'flex', justifyContent: 'space-between', paddingBottom: '0.5rem', borderBottom: '1px solid #333' }}>
-                            <span>Transport</span>
-                            <span style={{ fontWeight: 600 }}>€80</span>
-                        </li>
-                    </ul>
-                </div>
+                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(400px, 1fr))', gap: '2rem' }}>
+                    {/* Width 50% split for stats below diagram */}
 
-                {/* Savings Rate Trend */}
-                <div className="card">
-                    <h2 style={{ fontSize: '1.25rem', marginBottom: '1rem' }}>Savings Rate</h2>
-                    <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', height: '150px' }}>
-                        <div style={{ position: 'relative', width: '120px', height: '120px', borderRadius: '50%', background: 'conic-gradient(var(--success) 48%, #333 0)' }}>
-                            <div style={{ position: 'absolute', inset: '10px', background: 'var(--bg-secondary)', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                                <span style={{ fontSize: '1.5rem', fontWeight: 'bold' }}>48%</span>
+                    {/* Expense Breakdown */}
+                    <div className="card">
+                        <h2 style={{ fontSize: '1.25rem', marginBottom: '1rem' }}>Top Expense Categories</h2>
+                        <ul style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
+                            {Object.entries(expensesByCategory)
+                                .sort(([, a], [, b]) => b - a)
+                                .slice(0, 5)
+                                .map(([cat, amount]) => (
+                                    <li key={cat} style={{ display: 'flex', justifyContent: 'space-between', paddingBottom: '0.5rem', borderBottom: '1px solid #eee' }}>
+                                        <span>{cat}</span>
+                                        <span style={{ fontWeight: 600 }}>€{amount.toLocaleString()}</span>
+                                    </li>
+                                ))}
+                        </ul>
+                    </div>
+
+                    {/* Savings Rate Trend */}
+                    <div className="card">
+                        <h2 style={{ fontSize: '1.25rem', marginBottom: '1rem' }}>Savings Rate</h2>
+                        {totalIncome > 0 ? (
+                            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', height: '150px' }}>
+                                <div style={{ position: 'relative', width: '120px', height: '120px', borderRadius: '50%', background: `conic-gradient(var(--color-green) ${((totalIncome - totalExpenses) / totalIncome) * 100}%, #eee 0)` }}>
+                                    <div style={{ position: 'absolute', inset: '10px', background: 'white', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                                        <span style={{ fontSize: '1.5rem', fontWeight: 'bold' }}>{(((totalIncome - totalExpenses) / totalIncome) * 100).toFixed(1)}%</span>
+                                    </div>
+                                </div>
                             </div>
-                        </div>
+                        ) : (
+                            <p>Add income to see savings rate.</p>
+                        )}
+                        <p style={{ textAlign: 'center', color: '#666', marginTop: '0.5rem' }}>Target: 50%</p>
                     </div>
-                    <p style={{ textAlign: 'center', color: '#666', marginTop: '0.5rem' }}>Target: 50%</p>
                 </div>
 
             </div>
