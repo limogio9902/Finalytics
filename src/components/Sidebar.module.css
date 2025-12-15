@@ -1,0 +1,93 @@
+.sidebar {
+    width: 250px;
+    height: 100vh;
+    background-color: var(--bg-secondary);
+    border-right: 1px solid #333;
+    position: fixed;
+    left: 0;
+    top: 0;
+    padding: 2rem 1rem;
+    display: flex;
+    flex-direction: column;
+    z-index: 100;
+    transition: transform 0.3s ease;
+}
+
+.logo {
+    margin-bottom: 3rem;
+    padding-left: 1rem;
+}
+
+.nav {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.link {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    padding: 0.75rem 1rem;
+    border-radius: 8px;
+    color: var(--text-secondary);
+    transition: all 0.2s;
+}
+
+.link:hover {
+    background-color: rgba(255, 255, 255, 0.05);
+    color: var(--text-primary);
+    transform: translateX(5px);
+}
+
+.footer {
+    margin-top: auto;
+    padding-left: 1rem;
+    color: #444;
+    font-size: 0.8rem;
+}
+
+@media (max-width: 768px) {
+    .sidebar {
+        width: 100%;
+        height: auto;
+        position: relative;
+        border-right: none;
+        border-bottom: 1px solid #333;
+        padding: 1rem;
+        flex-direction: row;
+        align-items: center;
+        justify-content: space-between;
+    }
+
+    .logo {
+        margin-bottom: 0;
+    }
+
+    .nav {
+        flex-direction: row;
+        gap: 1rem;
+        display: none;
+        /* Hide on very small screens or use hamburger? For now, let's keep it simple */
+    }
+
+    /* Simple Mobile Nav: Show icons only or bottom bar? 
+     Let's make it a bottom bar for true mobile feel, or just stack it.
+     Stacking is easiest for now.
+  */
+    .sidebar {
+        flex-direction: column;
+    }
+
+    .nav {
+        display: flex;
+        flex-direction: row;
+        flex-wrap: wrap;
+        justify-content: center;
+        margin-top: 1rem;
+    }
+
+    .footer {
+        display: none;
+    }
+}
