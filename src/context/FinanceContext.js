@@ -70,22 +70,92 @@ export function FinanceProvider({ children }) {
         if (isLoaded) localStorage.setItem('finalytics_assets', JSON.stringify(assets));
     }, [assets, isLoaded]);
 
-    // CRUD Handlers
-    const addIncome = (item) => setIncomes([...incomes, { ...item, id: Date.now() }]);
-    const updateIncome = (id, newItem) => setIncomes(incomes.map(i => i.id === id ? newItem : i));
-    const deleteIncome = (id) => setIncomes(incomes.filter(i => i.id !== id));
+    // History State
+    const [history, setHistory] = useState({ past: [], future: [] });
 
-    const addFixed = (item) => setFixedExpenses([...fixedExpenses, { ...item, id: Date.now() }]);
-    const updateFixed = (id, newItem) => setFixedExpenses(fixedExpenses.map(i => i.id === id ? newItem : i));
-    const deleteFixed = (id) => setFixedExpenses(fixedExpenses.filter(i => i.id !== id));
+    // Helper to Snapshot State
+    const saveSnapshot = () => {
+        const currentSnapshot = { incomes, fixedExpenses, variableExpenses, assets };
+        setHistory(curr => ({
+            past: [...curr.past, currentSnapshot],
+            future: []
+        }));
+    };
 
-    const addVariable = (item) => setVariableExpenses([...variableExpenses, { ...item, id: Date.now() }]);
-    const updateVariable = (id, newItem) => setVariableExpenses(variableExpenses.map(i => i.id === id ? newItem : i));
-    const deleteVariable = (id) => setVariableExpenses(variableExpenses.filter(i => i.id !== id));
+    // Undo
+    const undo = () => {
+        if (history.past.length === 0) return;
+        const previous = history.past[history.past.length - 1];
+        const newPast = history.past.slice(0, -1);
 
-    const addAsset = (item) => setAssets([...assets, { ...item, id: Date.now() }]);
-    const updateAsset = (id, newItem) => setAssets(assets.map(a => a.id === id ? newItem : a));
-    const deleteAsset = (id) => setAssets(assets.filter(a => a.id !== id));
+        // Save current to future
+        const currentSnapshot = { incomes, fixedExpenses, variableExpenses, assets };
+
+        setHistory({
+            past: newPast,
+            future: [currentSnapshot, ...history.future]
+        });
+
+        // Restore State
+        setIncomes(previous.incomes);
+        setFixedExpenses(previous.fixedExpenses);
+        setVariableExpenses(previous.variableExpenses);
+        setAssets(previous.assets);
+    };
+
+    // Redo
+    const redo = () => {
+        if (history.future.length === 0) return;
+        const next = history.future[0];
+        const newFuture = history.future.slice(1);
+
+        // Save current to past
+        const currentSnapshot = { incomes, fixedExpenses, variableExpenses, assets };
+
+        setHistory({
+            past: [...history.past, currentSnapshot],
+            future: newFuture
+        });
+
+        // Restore State
+        setIncomes(next.incomes);
+        setFixedExpenses(next.fixedExpenses);
+        setVariableExpenses(next.variableExpenses);
+        setAssets(next.assets);
+    };
+
+    // Keyboard Shortcuts
+    useEffect(() => {
+        const handleKeyDown = (e) => {
+            if ((e.ctrlKey || e.metaKey) && e.key === 'z') {
+                e.preventDefault();
+                undo();
+            }
+            if ((e.ctrlKey || e.metaKey) && (e.key === 'y' || (e.shiftKey && e.key === 'Z'))) {
+                e.preventDefault();
+                redo();
+            }
+        };
+        window.addEventListener('keydown', handleKeyDown);
+        return () => window.removeEventListener('keydown', handleKeyDown);
+    }, [history, incomes, fixedExpenses, variableExpenses, assets]);
+
+    // CRUD Handlers (Wrapped with History)
+    const addIncome = (item) => { saveSnapshot(); setIncomes([...incomes, { ...item, id: Date.now() }]); };
+    const updateIncome = (id, newItem) => { saveSnapshot(); setIncomes(incomes.map(i => i.id === id ? newItem : i)); };
+    const deleteIncome = (id) => { saveSnapshot(); setIncomes(incomes.filter(i => i.id !== id)); };
+
+    const addFixed = (item) => { saveSnapshot(); setFixedExpenses([...fixedExpenses, { ...item, id: Date.now() }]); };
+    const updateFixed = (id, newItem) => { saveSnapshot(); setFixedExpenses(fixedExpenses.map(i => i.id === id ? newItem : i)); };
+    const deleteFixed = (id) => { saveSnapshot(); setFixedExpenses(fixedExpenses.filter(i => i.id !== id)); };
+
+    const addVariable = (item) => { saveSnapshot(); setVariableExpenses([...variableExpenses, { ...item, id: Date.now() }]); };
+    const updateVariable = (id, newItem) => { saveSnapshot(); setVariableExpenses(variableExpenses.map(i => i.id === id ? newItem : i)); };
+    const deleteVariable = (id) => { saveSnapshot(); setVariableExpenses(variableExpenses.filter(i => i.id !== id)); };
+
+    const addAsset = (item) => { saveSnapshot(); setAssets([...assets, { ...item, id: Date.now() }]); };
+    const updateAsset = (id, newItem) => { saveSnapshot(); setAssets(assets.map(a => a.id === id ? newItem : a)); };
+    const deleteAsset = (id) => { saveSnapshot(); setAssets(assets.filter(a => a.id !== id)); };
 
     // Calculated Values
     const totalIncome = incomes.reduce((acc, i) => acc + (Number(i.amount) || 0), 0);
@@ -103,7 +173,7 @@ export function FinanceProvider({ children }) {
             variableExpenses, addVariable, updateVariable, deleteVariable,
             assets, addAsset, updateAsset, deleteAsset,
             totalIncome, totalExpenses, savingsRate, totalAssetValue,
-            isLoaded
+            isLoaded, undo, redo // Export undo/redo if needed in UI buttons later
         }}>
             {children}
         </FinanceContext.Provider>
