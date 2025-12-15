@@ -1,5 +1,5 @@
 "use client";
-import { useState } from 'react';
+import { useState, useRef } from 'react';
 
 import AnimatedNumber from './AnimatedNumber';
 
@@ -8,6 +8,9 @@ export default function BudgetTable({ title, items, type = 'expense', onAdd, onU
     const [editFormData, setEditFormData] = useState({});
     const [isAdding, setIsAdding] = useState(false);
     const [newFormData, setNewFormData] = useState({ name: '', category: '', amount: '' });
+
+    // Ref for rapid entry focus
+    const nameInputRef = useRef(null);
 
     const total = items.reduce((acc, item) => acc + (Number(item.amount) || 0), 0);
     const isIncome = type === 'income';
@@ -27,7 +30,9 @@ export default function BudgetTable({ title, items, type = 'expense', onAdd, onU
         if (!newFormData.name || !newFormData.amount) return;
         onAdd({ ...newFormData, amount: Number(newFormData.amount) });
         setNewFormData({ name: '', category: '', amount: '' });
-        setIsAdding(false);
+        // Rapid Entry: Keep isAdding true and refocus name
+        setIsAdding(true);
+        setTimeout(() => nameInputRef.current?.focus(), 0);
     };
 
     const handleEditKeyDown = (e) => {
@@ -108,7 +113,7 @@ export default function BudgetTable({ title, items, type = 'expense', onAdd, onU
                     {/* Add Row */}
                     {isAdding ? (
                         <tr>
-                            <td style={{ padding: '0.2rem' }}><input className="animate-pop" name="name" placeholder="Name" value={newFormData.name} onChange={handleAddChange} onKeyDown={handleAddKeyDown} autoFocus style={inputStyle} /></td>
+                            <td style={{ padding: '0.2rem' }}><input ref={nameInputRef} className="animate-pop" name="name" placeholder="Name" value={newFormData.name} onChange={handleAddChange} onKeyDown={handleAddKeyDown} style={inputStyle} /></td>
                             <td style={{ padding: '0.2rem' }}><input className="animate-pop" name="amount" type="number" placeholder="0" value={newFormData.amount} onChange={handleAddChange} onKeyDown={handleAddKeyDown} style={{ ...inputStyle, textAlign: 'right' }} /></td>
                             <td style={{ padding: '0.2rem', textAlign: 'right' }}>
                                 <div className="animate-pop" style={{ display: 'flex', gap: '4px', justifyContent: 'flex-end' }}>

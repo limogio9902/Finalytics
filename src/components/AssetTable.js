@@ -1,5 +1,5 @@
 "use client";
-import { useState } from 'react';
+import { useState, useRef } from 'react';
 
 import AnimatedNumber from './AnimatedNumber';
 
@@ -8,6 +8,9 @@ export default function AssetTable({ assets, onAdd, onUpdate, onDelete }) {
     const [editFormData, setEditFormData] = useState({});
     const [isAdding, setIsAdding] = useState(false);
     const [newFormData, setNewFormData] = useState({ symbol: '', name: '', price: '', quantity: '', avgBuyPrice: '', type: 'Stock' });
+
+    // Ref for rapid entry focus
+    const symbolInputRef = useRef(null);
 
     const totalValue = assets.reduce((sum, asset) => sum + (Number(asset.price) || 0) * (Number(asset.quantity) || 0), 0);
 
@@ -23,7 +26,9 @@ export default function AssetTable({ assets, onAdd, onUpdate, onDelete }) {
         if (!newFormData.symbol || !newFormData.quantity) return;
         onAdd({ ...newFormData, price: Number(newFormData.price), quantity: Number(newFormData.quantity), avgBuyPrice: Number(newFormData.avgBuyPrice) });
         setNewFormData({ symbol: '', name: '', price: '', quantity: '', avgBuyPrice: '', type: 'Stock' });
-        setIsAdding(false);
+        // Rapid Entry: Keep isAdding true and refocus symbol
+        setIsAdding(true);
+        setTimeout(() => symbolInputRef.current?.focus(), 0);
     };
 
     const handleEditKeyDown = (e) => {
@@ -146,7 +151,7 @@ export default function AssetTable({ assets, onAdd, onUpdate, onDelete }) {
                     {isAdding ? (
                         <tr>
                             <td style={{ padding: '0.2rem' }}>
-                                <input className="animate-pop" name="symbol" value={newFormData.symbol} onChange={handleAddChange} onKeyDown={handleAddKeyDown} placeholder="Symbol" style={{ ...inputStyle, width: '70px', textTransform: 'uppercase' }} />
+                                <input ref={symbolInputRef} className="animate-pop" name="symbol" value={newFormData.symbol} onChange={handleAddChange} onKeyDown={handleAddKeyDown} placeholder="Symbol" style={{ ...inputStyle, width: '70px', textTransform: 'uppercase' }} />
                                 <input className="animate-pop" name="name" value={newFormData.name} onChange={handleAddChange} onKeyDown={handleAddKeyDown} placeholder="Name" style={{ ...inputStyle, marginTop: '4px', fontSize: '0.8rem' }} />
                             </td>
                             <td style={{ padding: '0.2rem' }}><input className="animate-pop" name="price" type="number" placeholder="Price" value={newFormData.price} onChange={handleAddChange} onKeyDown={handleAddKeyDown} style={{ ...inputStyle, textAlign: 'right' }} /></td>
