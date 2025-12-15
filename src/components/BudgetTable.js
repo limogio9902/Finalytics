@@ -126,7 +126,10 @@ export default function BudgetTable({ title, items, type = 'expense', onAdd, onU
                         <tr>
                             <td colSpan={3} style={{ padding: '0.5rem' }}>
                                 <button
-                                    onClick={() => setIsAdding(true)}
+                                    onClick={() => {
+                                        setIsAdding(true);
+                                        setTimeout(() => nameInputRef.current?.focus(), 0);
+                                    }}
                                     style={{
                                         width: '100%',
                                         padding: '0.8rem',

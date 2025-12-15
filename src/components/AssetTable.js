@@ -169,7 +169,10 @@ export default function AssetTable({ assets, onAdd, onUpdate, onDelete }) {
                         <tr>
                             <td colSpan={6} style={{ padding: '0.5rem' }}>
                                 <button
-                                    onClick={() => setIsAdding(true)}
+                                    onClick={() => {
+                                        setIsAdding(true);
+                                        setTimeout(() => symbolInputRef.current?.focus(), 0);
+                                    }}
                                     style={{
                                         width: '100%',
                                         padding: '0.8rem',
